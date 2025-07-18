@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Event Booking System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #ff69b4;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        section {
+            padding: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        .hidden {
+            display: none;
+        }
+        .event-item {
+            background: #fff;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-ticket, #printable-ticket * {
+                visibility: visible;
+            }
+            #printable-ticket {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                text-align: center;
+                border: 1px solid black;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to CHALAPATHI INSTITUTE OF ENGINEERING AND TECHNOLOGY (CIET)</h1>
+        <h2>Event Planning and Ticketing System</h2>
+    </header>
+
+    <section id="college-info">
+        <h2>About Our College</h2>
+        <p>
+            Our college is committed to providing students with exceptional learning opportunities.
+            Our events are for student growth, innovation, and community engagement.
+        </p>
+        <h3>Our Event Ideology</h3>
+        <p>
+            At CIET, events are not just social gatherings but vital opportunities to learn, network, and create memories.
+            Our planning process ensures efficiency, inclusivity, and smooth operations.
+        </p>
+    </section>
+
+    <section id="events-section">
+        <h2>Upcoming Events:</h2>
+        <div id="events-list"></div>
+    </section>
+
+    <section id="booking-form-section" class="hidden">
+        <h3>Booking Form</h3>
+        <form id="booking-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required><br><br>
+            <label for="seats">Number of Seats:</label>
+            <input type="number" id="seats" min="1" required><br><br>
+            <button type="button" onclick="confirmBooking()">Confirm Booking</button>
+        </form>
+        <button onclick="goBackToEvents()">Back to Events</button>
+    </section>
+
+    <section id="ticket-section" class="hidden">
+        <h3>Your Ticket</h3>
+        <p>Event: <span id="ticket-event"></span></p>
+        <p>Name: <span id="ticket-name"></span></p>
+        <p>Email: <span id="ticket-email"></span></p>
+        <p>Seats: <span id="ticket-seats"></span></p>
+        <p>Total Amount: $<span id="total-amount"></span></p>
+        <button onclick="goToPayment()">Proceed to Payment</button>
+        <button onclick="goBackToBooking()">Back to Booking</button>
+    </section>
+
+    <section id="payment-section" class="hidden">
+        <h3>Payment Section</h3>
+        <p>Amount: $<span id="total-amount-payment"></span></p>
+        <h4>Select Payment Method:</h4>
+        <label>
+            <input type="radio" name="payment-method" value="Paytm"> Paytm
+        </label><br>
+        <label>
+            <input type="radio" name="payment-method" value="PhonePe"> PhonePe
+        </label><br>
+        <label>
+            <input type="radio" name="payment-method" value="GPay"> GPay
+        </label><br>
+        <button onclick="confirmPayment()">Confirm Payment</button>
+        <button onclick="goBackToTicket()">Back to Ticket</button>
+    </section>
+
+    <section id="final-ticket-section" class="hidden">
+        <h3>Final Ticket Confirmation</h3>
+        <div id="printable-ticket">
+            <p>Event: <span id="final-event"></span></p>
+            <p>Name: <span id="final-name"></span></p>
+            <p>Email: <span id="final-email"></span></p>
+            <p>Seats: <span id="final-seats"></span></p>
+            <p>Total Amount: $<span id="final-amount"></span></p>
+        </div>
+        <button onclick="printTicket()">Print Ticket</button>
+        <button onclick="goBackToEvents()">Go to Events</button>
+    </section>
+
+    <script>
+        const events = [
+            { name: "Innovation Brains 2024", date: "2024-10-15", time: "10:00 AM", description: "A fair to showcase innovative projects.", capacity: 100, attendance: 0 },
+            { name: "Cultural Fest 2024", date: "2024-11-20", time: "05:00 PM", description: "Celebrate culture with music and dance.", capacity: 200, attendance: 0 },
+            { name: "Tech Wars 2024", date: "2024-12-01", time: "09:00 AM", description: "Discussing the latest in technology.", capacity: 150, attendance: 0 }
+        ];
+
+        let currentEvent = null;
+
+        function updateEventsDisplay() {
+            const eventsList = document.getElementById('events-list');
+            eventsList.innerHTML = ''; // Clear existing events
+
+            events.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+                eventItem.innerHTML = `
+                    <h3>${event.name}</h3>
+                    <p>Date: ${event.date}</p>
+                    <p>Time: ${event.time}</p>
+                    <p>${event.description}</p>
+                    <p>Capacity: ${event.capacity}</p>
+                    <p>Attendance: ${event.attendance}</p>
+                    <button onclick="bookTicket('${event.name}')" ${event.attendance >= event.capacity ? 'disabled' : ''}>
+                        ${event.attendance >= event.capacity ? 'Sold Out' : 'Book Ticket'}
+                    </button>
+                `;
+                eventsList.appendChild(eventItem);
+            });
+        }
+
+        function bookTicket(eventName) {
+            currentEvent = events.find(event => event.name === eventName);
+            document.getElementById('ticket-event').innerText = currentEvent.name;
+            document.getElementById('booking-form-section').style.display = 'block';
+            document.getElementById('events-section').style.display = 'none';
+        }
+
+        function confirmBooking() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const seats = parseInt(document.getElementById('seats').value);
+
+            if (name.length < 3 ) {
+                alert("Enter your name correctly");
+                return;
+            }
+			if(/\d/.test(name)) {
+			 alert("Enter a valid name not numbers");
+			 return;
+			 }
+            if (!email.includes("@") || !email.includes(".")) {
+                alert("Enter a valid email.");
+                return;
+            }
+            if (isNaN(seats) || seats < 1) {
+                alert("Enter a valid seat count.");
+                return;
+            }
+
+            document.getElementById('ticket-name').innerText = name;
+            document.getElementById('ticket-email').innerText = email;
+            document.getElementById('ticket-seats').innerText = seats;
+
+            const totalAmount = seats * 20;
+            document.getElementById('total-amount').innerText = totalAmount;
+            document.getElementById('total-amount-payment').innerText = totalAmount;
+
+            document.getElementById('booking-form-section').style.display = 'none';
+            document.getElementById('ticket-section').style.display = 'block';
+        }
+
+        function goToPayment() {
+            document.getElementById('ticket-section').style.display = 'none';
+            document.getElementById('payment-section').style.display = 'block';
+        }
+
+        function confirmPayment() {
+            const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked');
+            if (!selectedPaymentMethod) {
+                alert("Select a payment method.");
+                return;
+            }
+
+            document.getElementById('final-event').innerText = currentEvent.name;
+            document.getElementById('final-name').innerText = document.getElementById('ticket-name').innerText;
+            document.getElementById('final-email').innerText = document.getElementById('ticket-email').innerText;
+            document.getElementById('final-seats').innerText = document.getElementById('ticket-seats').innerText;
+            document.getElementById('final-amount').innerText = document.getElementById('total-amount').innerText;
+
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('final-ticket-section').style.display = 'block';
+
+            currentEvent.attendance += parseInt(document.getElementById('ticket-seats').innerText);
+            updateEventsDisplay();
+        }
+
+        function printTicket() {
+            window.print();
+        }
+
+        function goBackToEvents() {
+            document.querySelectorAll('section').forEach(section => section.style.display = 'none');
+            document.getElementById('events-section').style.display = 'block';
+            updateEventsDisplay();
+        }
+
+        function goBackToBooking() {
+            document.getElementById('ticket-section').style.display = 'none';
+            document.getElementById('booking-form-section').style.display = 'block';
+        }
+
+        function goBackToTicket() {
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('ticket-section').style.display = 'block';
+        }
+
+        updateEventsDisplay();
+    </script>
+</body>
+</html>

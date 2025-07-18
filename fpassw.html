@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="Admin.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<center><h1>Forgot Your Password?</h1></center>
+    <div class="container">
+        <div class="form_area">
+            <p class="title">RESET PASSWORD</p>
+            <form id="forgotPasswordForm">
+                <div class="form_group">
+                    <label class="sub_title" for="mobileNumber">Mobile Number</label>
+                    <input placeholder="Enter your mobile number" id="mobileNumber" class="form_style" type="text" required>
+                </div>
+                <div class="form_group" id="otpGroup" style="display:none;">
+                    <label class="sub_title" for="otp">OTP</label>
+                    <input placeholder="Enter OTP" id="otp" class="form_style" type="text" required>
+                </div>
+                <div id="otpBtn">
+                    <button type="button" class="btn" id="sendOtpBtn">Send OTP</button>
+                </div>
+                <div>
+                    <button type="submit" class="btn" id="submitBtn" style="display:none;">RESET PASSWORD</button>
+                    <p>Remember your password? <a class="link" href="login.html">Login Here!</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simulating OTP sending using a backend API (this is a mock function)
+        function sendOtp(mobileNumber) {
+            // Here you would call your backend API to send the OTP via SMS.
+            var otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+            console.log("OTP sent to " + mobileNumber + ": " + otp);
+            localStorage.setItem("otp", otp);  // Save OTP in localStorage (mock server-side storage)
+        }
+
+        // Event listener for 'Send OTP' button
+        $('#sendOtpBtn').on('click', function() {
+            var mobileNumber = $('#mobileNumber').val();
+            if (mobileNumber) {
+                sendOtp(mobileNumber);  // Call the function to send OTP
+                $('#otpGroup').show();  // Show the OTP input field
+                $('#submitBtn').show();  // Show the submit button
+                $(this).hide();  // Hide the 'Send OTP' button after clicking
+            } else {
+                alert('Please enter your mobile number.');
+            }
+        });
+
+        // Event listener for form submission
+        $('#forgotPasswordForm').on('submit', function(e) {
+            e.preventDefault();  // Prevent the form from submitting normally
+
+            var enteredOtp = $('#otp').val();
+            var correctOtp = localStorage.getItem('otp');
+
+            if (enteredOtp == correctOtp) {
+                // OTP is correct, allow user to reset their password
+                alert('OTP verified. You can now reset your password.');
+                window.location.href = "rpass.html";  // Redirect to reset password page
+            } else {
+                alert('Invalid OTP. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

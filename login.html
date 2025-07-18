@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Link to the CSS File -->
+    <link rel="stylesheet" href="Admin.css">
+</head>
+<body>
+<h1><center>🙏Welcome back Admin!🙏</center></h1>
+    <div class="container">
+        <div class="form_area">
+            <p class="title">LOGIN</p>
+            <form id="loginForm">
+                <div class="form_group">
+                    <label class="sub_title" for="email">Email</label>
+                    <input placeholder="Enter your email" id="email" class="form_style" type="email" required>
+                </div>
+                <div class="form_group">
+                    <label class="sub_title" for="number">Mobile Number</label>
+                    <input placeholder="Enter your number" id="number" class="form_style" type="text" required>
+                </div>
+                <div class="form_group">
+                    <label class="sub_title" for="password">Password</label>
+                    <input placeholder="Enter your password" id="password" class="form_style" type="password" required>
+                </div>
+                <div>
+                    <button type="submit" class="btn">LOGIN</button>
+                    <p>Forgot your Password?<a class="link" href="fpassw.html">Tryhere!</a></p>
+                    <p>Don't have an Account? <a class="link" href="Admin.html">Sign Up Here!</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Accessing the password value inside the submit event handler
+            const password = document.getElementById('password').value.trim();
+            console.log(password);
+
+            // You can add further logic for password validation here if needed
+        });
+    </script>
+</body>
+</html>

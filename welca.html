@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Actions</title>
+    <link rel="stylesheet" href="Admin.css"> <!-- CSS file -->
+</head>
+<body>
+    <center><h1>🙏 Welcome, Admin! 🙏</h1></center>
+    <div class="container">
+        <div class="form_area">
+            <p class="title">Choose an Action</p>
+            <div class="form_group">
+                <button type="button" class="btn" onclick="addEvent()">Add an Event</button>
+            </div>
+            <div class="form_group">
+                <button type="button" class="btn" onclick="checkProgress()">Check Event Booking Progress</button>
+            </div>
+            <div class="form_group">
+                <button type="button" class="btn" onclick="goToEventsPage()">Go to Events Page</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function addEvent() {
+            // Redirect to the Add Event page
+            alert("Redirecting to Add Event page...");
+            window.location.href = "add_event.html"; // Replace with the actual Add Event page
+        }
+
+        function checkProgress() {
+            // Redirect to the Check Progress page
+            alert("Redirecting to Check Booking Progress page...");
+            window.location.href = "check_progress.html"; // Replace with the actual Check Progress page
+        }
+
+        function goToEventsPage() {
+            // Redirect to the main Events page
+            alert("Redirecting to Events Page...");
+            window.location.href = "main.html"; // Replace with the actual Events page
+        }
+    </script>
+</body>
+</html>

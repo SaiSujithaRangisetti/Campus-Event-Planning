@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Your Password!</title>
+    <link rel="stylesheet" href="Admin.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <center><h1>🙏Reset Your Password!🙏</h1></center>
+    <div class="container">
+        <div class="form_area">
+            <p class="title">Set your New Password</p>
+            <div class="form_group">
+                <label class="sub_title" for="spass">Set Your Password</label>
+                <input placeholder="Set Your Password" id="spass" class="form_style" type="password" required>
+            </div>
+            <div class="form_group">
+                <label class="sub_title" for="cpass">Confirm Your Password</label>
+                <input placeholder="Confirm Your Password" id="cpass" class="form_style" type="password" required>
+            </div>
+            <div>
+                <button type="button" class="btn" id="submitBtn">SIGN UP</button>
+                <p>Have an Account? <a class="link" href="login.html">Login Here!</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const spass = document.getElementById("spass");
+        const cpass = document.getElementById("cpass");
+        const submitBtn = document.getElementById("submitBtn");
+
+        submitBtn.addEventListener("click", () => {
+            // Check if passwords have more than 6 characters
+            if (spass.value.length <= 6 || cpass.value.length <= 6) {
+                alert("Enter a password with more than 6 characters.");
+                return;
+            }
+
+            // Check if passwords match
+            if (spass.value === cpass.value) {
+                alert('Password reset successful!');
+                window.location.href = "login.html"; // Redirect to the desired page
+            } else {
+                alert('Passwords do not match. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
